@@ -1,0 +1,69 @@
+# Función para leer los números desde el archivo
+leer_numeros <- function(archivo) {
+  if (!file.exists(archivo)) {
+    stop("El archivo no existe.")
+  }
+  
+  # Leer el archivo y convertir los valores en números enteros
+  numeros <- as.integer(readLines(archivo))
+  return(numeros)
+}
+
+# Función para calcular los estadísticos
+calcular_estadisticos <- function(numeros) {
+  media <- mean(numeros)
+  mediana <- median(numeros)
+  desviacion_estandar <- sd(numeros)
+  
+  # Verificar si la desviación estándar es mayor a 10
+  if (desviacion_estandar > 10) {
+    print("Alta variabilidad en los datos (desviación estándar > 10).")
+  }
+  
+  # Devolver los resultados
+  return(list(media = media, mediana = mediana, desviacion_estandar = desviacion_estandar))
+}
+
+# Función para calcular el cuadrado de cada número usando sapply()
+calcular_cuadrados <- function(numeros) {
+  cuadrados <- sapply(numeros, function(x) x^2)
+  return(cuadrados)
+}
+
+# Función para escribir los resultados en un archivo de salida
+escribir_resultados <- function(archivo_salida, estadisticos, cuadrados) {
+  # Abrir el archivo para escribir
+  con <- file(archivo_salida, "w")
+  
+  # Escribir los estadísticos en el archivo
+  writeLines(c(
+    "Estadísticos calculados:",
+    paste("Media: ", estadisticos$media),
+    paste("Mediana: ", estadisticos$mediana),
+    paste("Desviación estándar: ", estadisticos$desviacion_estandar),
+    "Cuadrados de los números:",
+    paste(cuadrados, collapse = ", ")
+  ), con)
+  
+  # Cerrar el archivo
+  close(con)
+}
+
+# Main
+archivo_entrada <- "numeros.txt"  # Nombre del archivo de entrada
+archivo_salida <- "resultados.txt"  # Nombre del archivo de salida
+
+# Leer los números del archivo
+numeros <- leer_numeros(archivo_entrada)
+
+# Calcular los estadísticos
+estadisticos <- calcular_estadisticos(numeros)
+
+# Calcular los cuadrados de los números
+cuadrados <- calcular_cuadrados(numeros)
+
+# Escribir los resultados en el archivo
+escribir_resultados(archivo_salida, estadisticos, cuadrados)
+
+# Mensaje final
+print("El archivo de resultados ha sido generado exitosamente.")
